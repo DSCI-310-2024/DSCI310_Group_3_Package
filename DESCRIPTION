@@ -1,0 +1,36 @@
+Package: DSCI310_Group_3_Package
+Title: Function packages tailored for DSCI 310 Group 3 project.
+Version: 0.0.0.9000
+Authors@R: 
+    person("Shawn", "Li", , "shawnli0612@gmail.com", role = c("aut", "cre"))
+    person("Selena", "Shew", , "shewselena@gmail.com", role = c("aut", "cre"))
+    person("Sri", "Chaitanya", , "schaitanya2907@gmail.com", role = c("aut", "cre"))
+    person("Lesley", "Mai", , "lmai17@student.ubc.ca", role = c("aut", "cre"))
+Description: Convenient functions to run the project and adapt the workflow.
+     lineplot: counts number of data points of each variable in a specific index 
+               level, and plot the counts using a line.
+     fetch_data:  takes a URl to a csv file online, whether the csv file has an 
+                  header, and the separation type as an input and returns the
+                  data.
+     calculate_and_export_means: operates on a range of columns, calculating the
+                                 mean for each column and exporting the results 
+                                 to a CSV file named "table_mean.csv" by
+                                 default.
+     run_lm_workflow: Creates a linear regression model workflow that predicts 
+                      the community well-being scores for various Canadian 
+                      communities, and outputs a table of the model's summary.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports: 
+    dplyr,
+    ggplot2,
+    rlang,
+    tidymodels,
+    readr
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/SLii02/lineplot
+BugReports: https://github.com/SLii02/lineplot/issues
