@@ -13,13 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# DSCI310_Group_3_Package
+# G3package
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 
-The DSCI310_Group_3_Package is a specialized R package designed to streamline
+The G3package is a specialized R package designed to streamline
 data analysis workflows for DSCI 310 Group 3's project. It features key 
 functions like `lineplot` for visualizing data counts, `fetch_data` for 
 importing CSV files, `calculate_and_export_means` for statistical analysis,
@@ -37,7 +37,7 @@ You can install the development version of our visualization package from
       
 ``` r
 # install.packages("devtools")
-devtools::install_github(SLii02/lineplot)
+devtools::install_github(DSCI-310-2024/DSCI310_Group_3_Package)
 ```
 
 ## Usage
@@ -84,6 +84,6 @@ If you want to load the package to use all functions listed above, you can
 quickly type:
 
 ``` {r}
-library(DSCI310_Group_3_Package)
+library(G3package)
 ```
 

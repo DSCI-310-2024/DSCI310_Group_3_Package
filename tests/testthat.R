@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(DSCI310_Group_3_Package)
+library(G3package)
 
-test_check("DSCI310_Group_3_Package")
+test_check("G3package")
