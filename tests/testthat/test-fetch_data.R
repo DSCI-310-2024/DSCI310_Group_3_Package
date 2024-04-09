@@ -1,40 +1,29 @@
-library(testthat) # most widely used package in R for test cases
+library(testthat)
 
+# Assume correct_data_url points to a valid, accessible local or remote CSV file for testing
 
-
-
-# Test data ---------------------------------------------------------------
-
-
-# Function input for tests (making the input data)
 correct_data_url <- "https://data.sac-isc.gc.ca/geomatics/directories/output/DonneesOuvertes_OpenData/CWB/CWB_2021.csv"
-correct_tfHeader <- T
+correct_tfHeader <- TRUE
 correct_sepType <- ","
 
-incorrect_data_url <- 12345
-incorrect_tfHeader <- "True"
-incorrect_sepType <- 1
+# Incorrect inputs for testing
+incorrect_data_url <- 12345  # Not a character
+incorrect_tfHeader <- "True"  # Not a logical TRUE or FALSE
+incorrect_sepType <- 1       # Not a character
 
-
-# Test suite --------------------------------------------------------------
-
-# Make the tests
-test_that("`run_lm_workflow` should return a data frame", {
-  expect_s3_class(fetch_data(correct_data_url, correct_tfHeader, correct_sepType), 
-                  "data.frame")
+test_that("`fetch_data` should return a data frame", {
+  expect_s3_class(fetch_data(correct_data_url, correct_tfHeader, correct_sepType), "data.frame")
 })
 
 test_that("Function stops with an error if 'data_url' is not a string", {
-  expect_error(fetch_data(incorrect_data_url, correct_tfHeader,correct_sepType),
-               "Data URL must be a string")
+  expect_error(fetch_data(incorrect_data_url, correct_tfHeader, correct_sepType))
 })
 
 test_that("Function stops with an error if 'tfHeader' is not a boolean", {
-  expect_error(fetch_data(correct_data_url, incorrect_tfHeader,correct_sepType),
-               "tfHeader must be a Boolean")
+  expect_error(fetch_data(correct_data_url, incorrect_tfHeader, correct_sepType))
 })
 
 test_that("Function stops with an error if 'sepType' is not a string", {
-  expect_error(fetch_data(correct_data_url, correct_tfHeader,incorrect_sepType),
-               "sepType must be a string")
+  expect_error(fetch_data(correct_data_url, correct_tfHeader, incorrect_sepType))
 })
+

@@ -1,4 +1,5 @@
-utils::globalVariables(c("Index", "count", "variable"))
+utils::globalVariables(c("Index", "count", "variable", "Income_2021",
+                         "CWB_2021", ".pred"))
 
 #' Generate a Line Plot
 #'
@@ -89,24 +90,32 @@ lineplot <- function(data, cols) {
 #' @export
 #' 
 #' @examples
-#' data_url <- "https://data.sac-isc.gc.ca/geomatics/directories/output/DonneesOuvertes_OpenData/CWB/CWB_2021.csv"
+#' data_url <- paste0("https://data.sac-isc.gc.ca/",
+#'             "geomatics/directories/output/",
+#'             "DonneesOuvertes_OpenData/CWB/",
+#'             "CWB_2021.csv")
 #' fetch_data(data_url, TRUE, ",")
 #' # Specify the URL for the data
 fetch_data <- function(data_url, tfHeader, sepType) {
-  if (!is.string(data_url)) {
-    stop("Data URL must be a string")
-  } else if (!is.boolean(tfHeader)) {
-    stop("tfHeader must be a Boolean")
-  } else if (!is.string(sepType)) {
-    stop("sepType must be a string")
+  if (!is.character(data_url)) {
+    stop("Data URL must be a string", call. = FALSE)
+  }
+  if (!is.logical(tfHeader) || length(tfHeader) != 1) {
+    stop("tfHeader must be a Boolean", call. = FALSE)
+  }
+  if (!is.character(sepType)) {
+    stop("SepType must be a string", call. = FALSE)
   }
   
-  # Download and read the data
-  raw_data <- read.csv(data_url, header = tfHeader, sep = sepType)
+  raw_data <- tryCatch({
+    utils::read.csv(data_url, header = tfHeader, sep = sepType)
+  }, error = function(e) {
+    stop("Failed to load data. Please check the URL and format.", call. = FALSE)
+  })
   
-  # Return the data as a data frame
   return(raw_data)
 }
+
 
 
 
@@ -138,15 +147,22 @@ fetch_data <- function(data_url, tfHeader, sepType) {
 #'         invisibly returns NULL.
 #'
 #' @examples
-#' df <- tibble(
+#' df <- tibble::tibble(
 #'   Income_2021 = c(50000, 60000, 70000),
 #'   Education_2021 = c(12, 14, 16),
 #'   Housing_2021 = c(200, 250, 300),
 #'   Labour_Force_Activity_2021 = c(1, 2, 1),
 #'   CWB_2021 = c(70, 75, 80)
 #' )
-#' calculate_and_export_means(df, getwd(), "community_means.csv")
-#'
+#' 
+#' out_dir <- "results"
+#' if (!dir.exists(out_dir)) {
+#' dir.create(out_dir)}
+#' calculate_and_export_means(df, out_dir, "table_mean.csv")
+#' if (dir.exists(out_dir)) {
+#' unlink(out_dir, recursive = TRUE)
+#' }
+#' 
 #' @export
 calculate_and_export_means <- function(data, out_dir, file_name = "table_mean.csv") {
   # Load necessary libraries
@@ -154,7 +170,7 @@ calculate_and_export_means <- function(data, out_dir, file_name = "table_mean.cs
   if (!requireNamespace("readr", quietly = TRUE)) stop("readr is required but not installed.")
   
   if (ncol(data) == 0 || nrow(data) == 0) {
-    empty_table <- tibble(
+    empty_table <- tibble::tibble(
       Income_2021 = numeric(),
       Education_2021 = numeric(),
       Housing_2021 = numeric(),
@@ -169,7 +185,8 @@ calculate_and_export_means <- function(data, out_dir, file_name = "table_mean.cs
   
   # Calculate the mean values for the specified range of columns
   table_mean <- data |>
-    dplyr::summarize(across(Income_2021:CWB_2021, ~mean(.x, na.rm = TRUE)))
+    dplyr::summarize(dplyr::across(Income_2021:CWB_2021,
+                                   ~mean(.x, na.rm = TRUE)))
   
   # Define the output file path
   output_path <- file.path(out_dir, file_name)
@@ -207,35 +224,82 @@ calculate_and_export_means <- function(data, out_dir, file_name = "table_mean.cs
 #' 
 #' @examples
 #' run_lm_workflow(train_data, test_data)
+#' Run a Linear Regression Model & Output the Model Summary
+#'
+#' Creates a linear regression model workflow that predicts the  
+#' community well-being scores for various Canadian communities,
+#' and outputs a table of the model's summary.
+#'
+#' @param train_data A data frame or data frame extension (e.g. a tibble)
+#' @param test_data A data frame or data frame extension (e.g. a tibble)
+#'
+#' @return A data frame or data frame extension (e.g. a tibble). 
+#'   The table contains the summary outputs of the model.
+#'
+#' @export
+#' 
+#' @examples
+#' run_lm_workflow(train_data, test_data)
+#' Run a Linear Regression Model & Output the Model Summary
+#'
+#' Creates a linear regression model workflow that predicts the  
+#' community well-being scores for various Canadian communities,
+#' and outputs a table of the model's summary.
+#'
+#' @param train_data A data frame or data frame extension (e.g. a tibble)
+#' @param test_data A data frame or data frame extension (e.g. a tibble)
+#'
+#' @return two data frame or data frame extension (e.g. a tibble). 
+#'   The table contains the summary outputs of the model, as well as the
+#'   coefficients of the model.
+#'
+#' @export
+#' 
+#' @examples
+#' train_data <- tibble::tibble(
+#'   CWB_2021 = rnorm(100), 
+#'   Income_2021 = rnorm(100),
+#'   Education_2021 = rnorm(100),
+#'   Housing_2021 = rnorm(100),
+#'   Labour_Force_Activity_2021 = rnorm(100)
+#'  )
+
+#' test_data <- tibble::tibble(
+#'   CWB_2021 = rnorm(50),  
+#'   Income_2021 = rnorm(50),
+#'   Education_2021 = rnorm(50),
+#'   Housing_2021 = rnorm(50),
+#'   Labour_Force_Activity_2021 = rnorm(50)
+#'  )
+#'
+#'  results <- run_lm_workflow(train_data, test_data)
 run_lm_workflow <- function(train_data, test_data) {
   
   # Define linear regression specification
-  lm_spec <- tidymodels::linear_reg() %>%
-    tidymodels::set_engine("lm") %>%
-    tidymodels::set_mode("regression")
+  lm_spec <- parsnip::linear_reg() |>
+    parsnip::set_engine("lm") |>
+    parsnip::set_mode("regression")
   
   # Define recipe
-  lm_recipe <- tidymodels::recipe(CWB_2021 ~ Income_2021 + Education_2021 +
-                                    Housing_2021 + Labour_Force_Activity_2021,
-                                  data = train_data)
+  lm_recipe <- recipes::recipe(CWB_2021 ~ Income_2021 + Education_2021 +
+                                 Housing_2021 + Labour_Force_Activity_2021,
+                               data = train_data)
   
   # Create workflow
-  lm_fit <- tidymodels::workflow() %>%
-    tidymodels::add_recipe(lm_recipe) %>%
-    tidymodels::add_model(lm_spec) %>%
-    tidymodels::fit(data = train_data)
+  lm_fit <- workflows::workflow() |>
+    workflows::add_recipe(lm_recipe) |>
+    workflows::add_model(lm_spec) |>
+    parsnip::fit(data = train_data)
   
   # Generate predictions and compute metrics for test data
-  test_summary <- lm_fit %>%
-    tidymodels::predict(new_data = test_data) %>%
-    dplyr::bind_cols(test_data) %>%
-    tidymodels::metrics(truth = CWB_2021, estimate = .pred)
+  test_summary <- lm_fit |>
+    stats::predict(new_data = test_data) |>
+    dplyr::bind_cols(test_data) |>
+    yardstick::metrics(truth = CWB_2021, estimate = .pred)
   
   # Return the test summary
-  return(test_summary)
+  return(list(test_summary = test_summary, lm_fit = lm_fit))
 }
-
-
 
 
 

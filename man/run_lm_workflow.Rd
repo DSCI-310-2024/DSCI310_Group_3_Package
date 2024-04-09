@@ -14,6 +14,13 @@ run_lm_workflow(train_data, test_data)
 \value{
 A data frame or data frame extension (e.g. a tibble).
 The table contains the summary outputs of the model.
+
+A data frame or data frame extension (e.g. a tibble).
+The table contains the summary outputs of the model.
+
+two data frame or data frame extension (e.g. a tibble).
+The table contains the summary outputs of the model, as well as the
+coefficients of the model.
 }
 \description{
 Creates a linear regression model workflow that predicts the
@@ -21,5 +28,20 @@ community well-being scores for various Canadian communities,
 and outputs a table of the model's summary.
 }
 \examples{
-run_lm_workflow(train_data, test_data)
+train_data <- tibble::tibble(
+  CWB_2021 = rnorm(100), 
+  Income_2021 = rnorm(100),
+  Education_2021 = rnorm(100),
+  Housing_2021 = rnorm(100),
+  Labour_Force_Activity_2021 = rnorm(100)
+ )
+test_data <- tibble::tibble(
+  CWB_2021 = rnorm(50),  
+  Income_2021 = rnorm(50),
+  Education_2021 = rnorm(50),
+  Housing_2021 = rnorm(50),
+  Labour_Force_Activity_2021 = rnorm(50)
+ )
+
+ results <- run_lm_workflow(train_data, test_data)
 }

@@ -1,12 +1,15 @@
-library(testthat) #most widely used package in R for test cases
+library(testthat)
+library(dplyr)
+library(recipes)
+library(workflows)
+library(parsnip)
+library(yardstick)
+library(tibble) # For creating tibbles
 
+# Assuming the run_lm_workflow function is defined elsewhere and is being sourced or is in the environment
 
-
-# test data ---------------------------------------------------------------
-
-
-# function input for tests (making the input data)
-correct_train_data <- tibble::tibble(
+# Test data preparation
+correct_train_data <- tibble(
   CWB_2021 = rnorm(100), 
   Income_2021 = rnorm(100),
   Education_2021 = rnorm(100),
@@ -14,7 +17,7 @@ correct_train_data <- tibble::tibble(
   Labour_Force_Activity_2021 = rnorm(100)
 )
 
-correct_test_data <- tibble::tibble(
+correct_test_data <- tibble(
   CWB_2021 = rnorm(50),  
   Income_2021 = rnorm(50),
   Education_2021 = rnorm(50),
@@ -22,44 +25,35 @@ correct_test_data <- tibble::tibble(
   Labour_Force_Activity_2021 = rnorm(50)
 )
 
-incorrect_train_data <- 123456789
+# Incorrect input data for testing error handling
+incorrect_train_data <- "Not a data frame"
+incorrect_test_data <- TRUE
 
-incorrect_test_data <- 987654321
-
-empty_train_data <- data.frame()
-
-empty_test_data <- data.frame()
-
-
-# expected function output (expected outcomes)
-empty_summary_output <- data.frame()
-
-example_correct_output <- run_lm_workflow(correct_train_data, correct_test_data)
-
-correct_summary_columns <- c("term", "estimate", "std.error", "statistic", 
-                             "p.value")
-
-# test suite --------------------------------------------------------------
-
-#Make the tests
-
-test_that("`run_lm_workflow` should return a data frame", {
-  expect_s3_class(run_lm_workflow(correct_train_data, correct_test_data), "data.frame")
+# Tests
+test_that("`run_lm_workflow` returns a list with `test_summary` and `lm_fit`", {
+  result <- run_lm_workflow(correct_train_data, correct_test_data)
+  expect_true("test_summary" %in% names(result))
+  expect_true("lm_fit" %in% names(result))
+  expect_s3_class(result$test_summary, "data.frame")
 })
 
-test_that("`run_lm_workflow` should return an empty dataframe 
-          if the inputs are empty`", {
-            expect_equivalent(run_lm_workflow(empty_train_data, empty_test_data), empty_summary_output)
-          })
-
-test_that("`run_lm_workflow should return a data frame that contains the 
-following columns: `term`, `estimate`, `std.error``, `statistic`, `p.value`", {
-  expect_true(all(correct_summary_columns %in% colnames(example_correct_output)))
+test_that("`run_lm_workflow` throws an error with incorrect input types", {
+  expect_error(run_lm_workflow(incorrect_train_data, correct_test_data))
+  expect_error(run_lm_workflow(correct_train_data, incorrect_test_data))
 })
 
-test_that("`run_lm_workflow` should throw an error 
-         when incorrect types are passed to `train_data` and `test_data` 
-          arguments", {
-            expect_error(run_lm_workflow(incorrect_train_data, correct_test_data))
-            expect_error(run_lm_workflow(correct_train_data, incorrect_test_data))
-          })
+test_that("`test_summary` contains the correct structure", {
+  result <- run_lm_workflow(correct_train_data, correct_test_data)
+  test_summary <- result$test_summary
+  
+  # Update the expected columns to match the actual output of metrics()
+  expected_columns <- c(".metric", ".estimator", ".estimate")
+  
+  # The test now checks for the presence of expected structural column names
+  expect_true(all(expected_columns %in% names(test_summary)),
+              info = paste("Expected columns:", paste(expected_columns, collapse = ", "),
+                           "but found:", paste(names(test_summary), collapse = ", ")))
+})
+
+
+

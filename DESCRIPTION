@@ -1,5 +1,5 @@
 Package: G3package
-Title: Function packages tailored for DSCI 310 Group 3 project.
+Title: Function packages tailored for DSCI 310 Group 3 project
 Version: 0.0.0.9000
 Authors@R: 
     person("Shawn", "Li", , "shawnli0612@gmail.com", role = c("aut", "cre"))
@@ -27,8 +27,12 @@ Imports:
     dplyr,
     ggplot2,
     rlang,
-    tidymodels,
-    readr
+    readr,
+    workflows,
+    parsnip, 
+    recipes,
+    tibble,
+    yardstick
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

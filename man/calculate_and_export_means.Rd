@@ -35,13 +35,20 @@ process that aims to learn about the health
 and happiness of communities.
 }
 \examples{
-df <- tibble(
+df <- tibble::tibble(
   Income_2021 = c(50000, 60000, 70000),
   Education_2021 = c(12, 14, 16),
   Housing_2021 = c(200, 250, 300),
   Labour_Force_Activity_2021 = c(1, 2, 1),
   CWB_2021 = c(70, 75, 80)
 )
-calculate_and_export_means(df, getwd(), "community_means.csv")
+
+out_dir <- "results"
+if (!dir.exists(out_dir)) {
+dir.create(out_dir)}
+calculate_and_export_means(df, out_dir, "table_mean.csv")
+if (dir.exists(out_dir)) {
+unlink(out_dir, recursive = TRUE)
+}
 
 }

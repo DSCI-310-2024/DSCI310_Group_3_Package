@@ -22,7 +22,10 @@ and the separation type as an input
 and returns that data.
 }
 \examples{
-data_url <- "https://data.sac-isc.gc.ca/geomatics/directories/output/DonneesOuvertes_OpenData/CWB/CWB_2021.csv"
+data_url <- paste0("https://data.sac-isc.gc.ca/",
+            "geomatics/directories/output/",
+            "DonneesOuvertes_OpenData/CWB/",
+            "CWB_2021.csv")
 fetch_data(data_url, TRUE, ",")
 # Specify the URL for the data
 }
