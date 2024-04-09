@@ -278,7 +278,7 @@ run_lm_workflow <- function(train_data, test_data) {
   # Define linear regression specification
   lm_spec <- parsnip::linear_reg() |>
     parsnip::set_engine("lm") |>
-    tidymodels::set_mode("regression")
+    parsnip::set_mode("regression")
   
   # Define recipe
   lm_recipe <- recipes::recipe(CWB_2021 ~ Income_2021 + Education_2021 +
