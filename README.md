@@ -1,16 +1,3 @@
----
-output: github_document
----
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
-
 # G3package
 The G3package is a specialized R package designed to streamline
 data analysis workflows for DSCI 310 Group 3's project. It features key 
