@@ -2,8 +2,6 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -14,11 +12,6 @@ knitr::opts_chunk$set(
 ```
 
 # G3package
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-
 The G3package is a specialized R package designed to streamline
 data analysis workflows for DSCI 310 Group 3's project. It features key 
 functions like `lineplot` for visualizing data counts, `fetch_data` for 
@@ -35,8 +28,7 @@ page.
 You can install the development version of our visualization package from
 [GitHub](https://github.com/) with:
       
-``` r
-# install.packages("devtools")
+``` {r}
 devtools::install_github("DSCI-310-2024/DSCI310_Group_3_Package")
 ```
 
@@ -61,37 +53,37 @@ cols_to_plot <- c("Category1", "Category2")
 lineplot(df, cols_to_plot)
 
 # Example 2: run_lm_workflow
- train_data <- tibble(
-  CWB_2021 = rnorm(100), 
+train_data <- tibble(
+  CWB_2021 = rnorm(100),
   Income_2021 = rnorm(100),
   Education_2021 = rnorm(100),
   Housing_2021 = rnorm(100),
   Labour_Force_Activity_2021 = rnorm(100)
 )
 
- test_data <- tibble(
-  CWB_2021 = rnorm(50),  
+test_data <- tibble(
+  CWB_2021 = rnorm(50),
   Income_2021 = rnorm(50),
   Education_2021 = rnorm(50),
   Housing_2021 = rnorm(50),
   Labour_Force_Activity_2021 = rnorm(50)
 )
- 
- results <- run_lm_workflow(train_data, test_data)
- 
+
+results <- run_lm_workflow(train_data, test_data)
+
 
 
 # Example 3: fetch_data
-data_url <- "https://data.sac-isc.gc.ca/geomatics/directories/output/DonneesOuvertes_OpenData/CWB/CWB_2021.csv"
-fetch_data(data_url, TRUE, ",")
+  data_url <- "https://data.sac-isc.gc.ca/geomatics/directories/output/DonneesOuvertes_OpenData/CWB/CWB_2021.csv"
+  fetch_data(data_url, TRUE, ",")
 
 # Example 4: calculate_and_export_means
 df <- tibble::tibble(
-   Income_2021 = c(50000, 60000, 70000),
-   Education_2021 = c(12, 14, 16),
-   Housing_2021 = c(200, 250, 300),
-   Labour_Force_Activity_2021 = c(1, 2, 1),
-   CWB_2021 = c(70, 75, 80))
+                     Income_2021 = c(50000, 60000, 70000),
+                     Education_2021 = c(12, 14, 16),
+                     Housing_2021 = c(200, 250, 300),
+                     Labour_Force_Activity_2021 = c(1, 2, 1),
+                     CWB_2021 = c(70, 75, 80))
 calculate_and_export_means(df, getwd(), "table_mean.csv")
 ```
 
